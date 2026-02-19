@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL as string;
+//const API_BASE = 'http://localhost:3001/api';
 const _HEADER = {
     'Content-Type': 'application/json',
 };
@@ -6,6 +7,7 @@ import { Produit } from '../model/produit';
 
 export const getProduits = async (): Promise<Produit[]> => {
     try {
+        console.log('API_BASE:', API_BASE); // Debug: Vérifiez la valeur de API_BASE
         const response = await fetch(`${API_BASE}/produits`);
         if (!response.ok) {
             throw new Error('Échec du chargement des produits');
@@ -17,7 +19,7 @@ export const getProduits = async (): Promise<Produit[]> => {
     }
 }
 
-export const getProduitById = async (id: number): Promise<Produit> => {
+export const getProduitById = async (id: string): Promise<Produit> => {
     try {
         const response = await fetch(`${API_BASE}/produits/${id}`);
         if (!response.ok) {
@@ -47,7 +49,7 @@ export const createProduit = async (produit: Produit): Promise<Produit> => {
     }
 }
 
-export const updateProduit = async (id: number, produit: Produit): Promise<Produit> => {
+export const updateProduit = async (id: string, produit: Produit): Promise<Produit> => {
     try {
         const response = await fetch(`${API_BASE}/produits/${id}`, {
             method: 'PUT',
@@ -64,7 +66,7 @@ export const updateProduit = async (id: number, produit: Produit): Promise<Produ
     }
 }
 
-export const deleteProduit = async (id: number): Promise<void> => {
+export const deleteProduit = async (id: string): Promise<void> => {
     try {
         const response = await fetch(`${API_BASE}/produits/${id}`, {
             method: 'DELETE',

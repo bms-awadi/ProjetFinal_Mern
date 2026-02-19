@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL as string;
+// const API_BASE = 'http://localhost:3001/api';
 const _HEADER = {
     'Content-Type': 'application/json',
 };
@@ -34,7 +35,7 @@ export const createCommande = async (commande: Commande): Promise<Commande> => {
     }
 }
 
-export const deleteCommande = async (id: number): Promise<void> => {
+export const deleteCommande = async (id: string): Promise<void> => {
     try {
         const response = await fetch(`${API_BASE}/commandes/${id}`, {
             method: 'DELETE',
