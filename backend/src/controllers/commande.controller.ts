@@ -3,10 +3,12 @@ import Commande from '../models/commande.model';
 
 export const getAllCommandes = async (req: Request, res: Response) => {
     try {
-        const commandes = await Commande.find();
+        const commandes = await Commande.find()
+            .populate('adherent')
+            .populate('produit');
         res.status(200).json(commandes);
     } catch (error) {
-        res.status(500).json({ message: 'Erreur lors de la récupération des adhérents', error });
+        res.status(500).json({ message: 'Erreur lors de la récupération des commandes', error });
     }
 };
 

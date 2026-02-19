@@ -6,5 +6,5 @@ export interface Commande {
     adherent: Adherent;
     produit: Produit;
     quantite: number;
-    date: string;
+    date: Date;
 }

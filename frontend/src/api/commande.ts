@@ -16,6 +16,7 @@ export const getCommandes = async (): Promise<Commande[]> => {
 
 export const createCommande = async (commande: Commande): Promise<Commande> => {
     try {
+        console.log('Création de la commande :', commande);
         const response = await fetch(`${API_BASE}/commandes`, {
             method: 'POST',
             headers: _HEADER,
