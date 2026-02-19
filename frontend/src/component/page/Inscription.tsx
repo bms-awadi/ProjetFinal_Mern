@@ -39,6 +39,7 @@ const Inscription = ({ onClose }: Props) => {
         width: "100%", padding: "10px 14px", borderRadius: "6px",
         border: "1px solid #cbd5e1", fontSize: "0.9rem", outline: "none",
         boxSizing: "border-box", background: "rgba(255,255,255,0.9)",
+        color: "#000",
     };
 
     const labelStyle: React.CSSProperties = {

@@ -45,7 +45,7 @@ const Connexion = ({ onConnecte }: Props) => {
             {/* Fond image + overlay */}
             <div style={{
                 minHeight: "100vh",
-                backgroundImage: "url('/src/assets/fond.png')",
+                backgroundImage: "url('/src/assets/fond1.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 display: "flex",
@@ -62,11 +62,11 @@ const Connexion = ({ onConnecte }: Props) => {
                 {/* Logo en haut à gauche */}
                 <div style={{
                     position: "absolute", top: "24px", left: "32px",
-                    display: "flex", alignItems: "center", gap: "10px", zIndex: 10,
+                    display: "flex", alignItems: "center", gap: "10px", zIndex: 50,
                 }}>
                     {/* Placeholder logo — remplacer par <img src="..." /> */}
-                    <img src="/src/assets/logo.png" style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover" }} />
-                    <span style={{ color: "white", fontWeight: 700, fontSize: "1.1rem", letterSpacing: "0.05em" }}>
+                    <img src="/src/assets/logo.png" style={{ width: "200px", height: "200px", borderRadius: "50%", objectFit: "cover" }} />
+                    <span style={{ color: "white", fontWeight: 750, fontSize: "1.5rem", letterSpacing: "0.05em" }}>
                         Ligue Sportive
                     </span>
                 </div>

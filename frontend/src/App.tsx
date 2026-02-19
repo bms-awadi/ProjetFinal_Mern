@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { PanierProvider } from './component/ContenuPanier';
 import Catalogue from './component/CatalogueProduits';
 import Panier from './component/Panier';
-import AjoutProduit from './component/page/AjoutProduit';
 import Connexion from './component/page/Connexion';
 import { deconnexion, estConnecte, getAdherentConnecte } from './api/adherent';
+import GestionAdherents from './component/page/GestionAdherents';
+import GestionProduits from './component/page/GestionProduits';
 import './App.css';
 
-type Page = 'connexion' | 'catalogue' | 'panier' | 'ajout';
+type Page = 'connexion' | 'catalogue' | 'panier' | 'GestionAdherents' | 'GestionProduits';
 
 function App() {
   const [page, setPage] = useState<Page>(estConnecte() ? 'catalogue' : 'connexion');
@@ -20,7 +21,7 @@ function App() {
 
   return (
     <PanierProvider>
-      {(page === 'catalogue' || page === 'panier' || page === 'ajout') && (
+      {(page === 'catalogue' || page === 'panier' || page === 'GestionAdherents' || page === 'GestionProduits') && (
         <nav className="bg-blue-700 text-white px-8 py-3 flex items-center gap-4 shadow-lg">
           <span className="text-xl font-extrabold tracking-wide mr-6">
             Ligue Sportive Auvergne
@@ -40,11 +41,18 @@ function App() {
             Mon Panier
           </button>
           <button
-            onClick={() => setPage('ajout')}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${page === 'ajout' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'
+            onClick={() => setPage('GestionAdherents')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${page === 'GestionAdherents' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'
               }`}
           >
-            Ajouter Produit
+            GestionAdherents
+          </button>
+          <button
+            onClick={() => setPage('GestionProduits')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${page === 'GestionProduits' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'
+              }`}
+          >
+            GestionProduits
           </button>
           <div className="ml-auto flex items-center gap-4">
             {adherent && (
@@ -66,7 +74,8 @@ function App() {
       {page === 'connexion' && <Connexion onConnecte={() => setPage('catalogue')} />}
       {page === 'catalogue' && <Catalogue />}
       {page === 'panier' && <Panier />}
-      {page === 'ajout' && <AjoutProduit />}
+      {page === 'GestionAdherents' && <GestionAdherents />}
+      {page === 'GestionProduits' && <GestionProduits />}
     </PanierProvider>
   );
 }
