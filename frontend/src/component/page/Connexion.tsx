@@ -1,24 +1,21 @@
 import { useState } from "react";
 import { connexion } from "../../api/adherent";
+import Inscription from "./Inscription";
 
 interface Props {
     onConnecte: () => void;
-    onSwitchInscription: () => void;
 }
 
-const Connexion = ({ onConnecte, onSwitchInscription }: Props) => {
+const Connexion = ({ onConnecte }: Props) => {
     const [email, setEmail] = useState("");
     const [mdp, setMdp] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showInscription, setShowInscription] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email || !mdp) {
-            setMessage("Veuillez remplir tous les champs.");
-            return;
-        }
-
+        if (!email || !mdp) { setMessage("Veuillez remplir tous les champs."); return; }
         setLoading(true);
         setMessage("");
         try {
@@ -31,51 +28,147 @@ const Connexion = ({ onConnecte, onSwitchInscription }: Props) => {
         }
     };
 
+    const inputStyle: React.CSSProperties = {
+        width: "100%",
+        padding: "10px 14px",
+        borderRadius: "6px",
+        border: "1px solid #cbd5e1",
+        fontSize: "0.9rem",
+        outline: "none",
+        boxSizing: "border-box",
+        background: "rgba(255,255,255,0.85)",
+        color: "#111",
+    };
+
     return (
-        <div className="max-w-md mx-auto mt-12 p-6 border rounded shadow">
-            <h2 className="text-2xl font-bold mb-6">Connexion</h2>
+        <>
+            {/* Fond image + overlay */}
+            <div style={{
+                minHeight: "100vh",
+                backgroundImage: "url('/src/assets/fond.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+            }}>
+                {/* Overlay sombre sur le fond */}
+                <div style={{
+                    position: "absolute", inset: 0,
+                    background: "rgba(0,0,0,0.45)",
+                }} />
 
-            {message && (
-                <p className="mb-4 font-semibold text-red-500">{message}</p>
-            )}
+                {/* Logo en haut à gauche */}
+                <div style={{
+                    position: "absolute", top: "24px", left: "32px",
+                    display: "flex", alignItems: "center", gap: "10px", zIndex: 10,
+                }}>
+                    {/* Placeholder logo — remplacer par <img src="..." /> */}
+                    <img src="/src/assets/logo.png" style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover" }} />
+                    <span style={{ color: "white", fontWeight: 700, fontSize: "1.1rem", letterSpacing: "0.05em" }}>
+                        Ligue Sportive
+                    </span>
+                </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="border px-3 py-2 rounded"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Mot de passe"
-                    value={mdp}
-                    onChange={(e) => setMdp(e.target.value)}
-                    className="border px-3 py-2 rounded"
-                    required
-                />
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`py-2 px-4 rounded text-white font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-                        }`}
-                >
-                    {loading ? "Connexion en cours..." : "Se connecter"}
-                </button>
-            </form>
+                {/* Carte de connexion */}
+                <div style={{
+                    position: "relative", zIndex: 10,
+                    background: "rgba(255,255,255,0.15)",
+                    backdropFilter: "blur(14px)",
+                    WebkitBackdropFilter: "blur(14px)",
+                    border: "1px solid rgba(255,255,255,0.3)",
+                    borderRadius: "20px",
+                    padding: "48px 44px",
+                    width: "100%",
+                    maxWidth: "420px",
+                    boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
+                }}>
+                    {/* Titre */}
 
-            <p className="mt-4 text-sm text-gray-600">
-                Pas encore de compte ?{" "}
-                <button
-                    onClick={onSwitchInscription}
-                    className="text-blue-600 hover:underline"
-                >
-                    S inscrire
-                </button>
-            </p>
-        </div>
+                    {message && (
+                        <div style={{
+                            marginBottom: "16px", padding: "10px 14px", borderRadius: "8px",
+                            background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.4)",
+                            color: "#fca5a5", fontSize: "0.85rem",
+                        }}>
+                            {message}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                            <label style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.85rem", fontWeight: 600 }}>
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                placeholder="exemple@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={inputStyle}
+                                required
+                            />
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                            <label style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.85rem", fontWeight: 600 }}>
+                                Mot de passe
+                            </label>
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                value={mdp}
+                                onChange={(e) => setMdp(e.target.value)}
+                                style={inputStyle}
+                                required
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            style={{
+                                marginTop: "8px",
+                                padding: "12px",
+                                borderRadius: "8px",
+                                border: "none",
+                                background: loading ? "#94a3b8" : "#2563eb",
+                                color: "white",
+                                fontWeight: 700,
+                                fontSize: "0.95rem",
+                                cursor: loading ? "not-allowed" : "pointer",
+                                transition: "background 0.2s",
+                            }}
+                        >
+                            {loading ? "Connexion en cours..." : "Se connecter"}
+                        </button>
+                    </form>
+
+                    <div style={{
+                        marginTop: "24px", paddingTop: "20px",
+                        borderTop: "1px solid rgba(255,255,255,0.2)",
+                        textAlign: "center",
+                    }}>
+                        <span style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.875rem" }}>
+                            Pas encore de compte ?{" "}
+                        </span>
+                        <button
+                            onClick={() => setShowInscription(true)}
+                            style={{
+                                background: "none", border: "none",
+                                color: "white", fontWeight: 700,
+                                fontSize: "0.875rem", cursor: "pointer",
+                                textDecoration: "underline",
+                            }}
+                        >
+                            S inscrire
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {showInscription && <Inscription onClose={() => setShowInscription(false)} />}
+        </>
     );
 };
 

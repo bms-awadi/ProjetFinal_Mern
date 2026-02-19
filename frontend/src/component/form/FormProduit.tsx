@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Produit } from "../model/produit";
+import { Produit } from "../../model/produit";
 
 interface FormProduitProps {
     initialData?: Produit;
     onSubmit: (produit: Produit) => Promise<Produit>;
+    onSuccess?: () => void;
     submitLabel?: string;
 }
 

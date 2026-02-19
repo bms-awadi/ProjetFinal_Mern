@@ -4,6 +4,7 @@ import { Adherent } from "../model/adherent";
 interface FormAdherentProps {
     initialData?: Adherent;
     onSubmit: (produit: Adherent) => Promise<Adherent>;
+    onSuccess?: () => void;
     submitLabel?: string;
 }
 

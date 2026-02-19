@@ -4,14 +4,14 @@ import Catalogue from './component/CatalogueProduits';
 import Panier from './component/Panier';
 import AjoutProduit from './component/page/AjoutProduit';
 import Connexion from './component/page/Connexion';
-import Inscription from './component/page/Inscription';
-import { deconnexion, estConnecte } from './api/adherent';
+import { deconnexion, estConnecte, getAdherentConnecte } from './api/adherent';
 import './App.css';
 
-type Page = 'connexion' | 'inscription' | 'catalogue' | 'panier' | 'ajout';
+type Page = 'connexion' | 'catalogue' | 'panier' | 'ajout';
 
 function App() {
   const [page, setPage] = useState<Page>(estConnecte() ? 'catalogue' : 'connexion');
+  const adherent = getAdherentConnecte();
 
   const handleDeconnexion = () => {
     deconnexion();
@@ -20,56 +20,50 @@ function App() {
 
   return (
     <PanierProvider>
-      {/* Navbar visible uniquement si connecte */}
       {(page === 'catalogue' || page === 'panier' || page === 'ajout') && (
-        <nav style={{ padding: '12px 24px', borderBottom: '1px solid #e5e7eb', display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <nav className="bg-blue-700 text-white px-8 py-3 flex items-center gap-4 shadow-lg">
+          <span className="text-xl font-extrabold tracking-wide mr-6">
+            Ligue Sportive Auvergne
+          </span>
           <button
             onClick={() => setPage('catalogue')}
-            className={`px-4 py-2 rounded font-semibold ${page === 'catalogue'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${page === 'catalogue' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'
               }`}
           >
             Catalogue
           </button>
           <button
             onClick={() => setPage('panier')}
-            className={`px-4 py-2 rounded font-semibold ${page === 'panier'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${page === 'panier' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'
               }`}
           >
             Mon Panier
           </button>
           <button
             onClick={() => setPage('ajout')}
-            className={`px-4 py-2 rounded font-semibold ${page === 'ajout'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${page === 'ajout' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'
               }`}
           >
             Ajouter Produit
           </button>
-          <button
-            onClick={handleDeconnexion}
-            className="ml-auto px-4 py-2 rounded font-semibold bg-red-500 text-white hover:bg-red-600"
-          >
-            Se deconnecter
-          </button>
+          <div className="ml-auto flex items-center gap-4">
+            {adherent && (
+              <span className="text-sm opacity-90">
+                Bonjour, <strong>{adherent.prenom} {adherent.nom}</strong>
+              </span>
+            )}
+            <button
+              onClick={handleDeconnexion}
+              className="px-4 py-2 rounded-full text-sm font-semibold bg-red-500 hover:bg-red-600 transition"
+            >
+              Se deconnecter
+            </button>
+          </div>
         </nav>
       )}
 
-      {page === 'connexion' && (
-        <Connexion
-          onConnecte={() => setPage('catalogue')}
-          onSwitchInscription={() => setPage('inscription')}
-        />
-      )}
-      {page === 'inscription' && (
-        <Inscription
-          onSwitchConnexion={() => setPage('connexion')}
-        />
-      )}
+      {/* Inscription n'est plus une page, c'est un popup géré dans Connexion */}
+      {page === 'connexion' && <Connexion onConnecte={() => setPage('catalogue')} />}
       {page === 'catalogue' && <Catalogue />}
       {page === 'panier' && <Panier />}
       {page === 'ajout' && <AjoutProduit />}

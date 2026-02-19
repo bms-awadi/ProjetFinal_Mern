@@ -1,8 +1,4 @@
-// const API_BASE = 'http://localhost:3001/api';
-const API_BASE = import.meta.env.VITE_API_URL as string;
-const _HEADER = {
-    'Content-Type': 'application/json',
-};
+import { API_BASE, _HEADER } from './config';
 import { Adherent } from '../model/adherent';
 
 export const getAdherents = async (): Promise<Adherent[]> => {

@@ -1,8 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL as string;
-//const API_BASE = 'http://localhost:3001/api';
-const _HEADER = {
-    'Content-Type': 'application/json',
-};
+import { API_BASE, _HEADER } from './config';
 import { Produit } from '../model/produit';
 
 export const getProduits = async (): Promise<Produit[]> => {
