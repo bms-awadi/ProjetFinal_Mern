@@ -1,5 +1,5 @@
 import express from 'express';
-import { createAdherent, getAllAdherents, getAdherentById, updateAdherent, deleteAdherent } from '../controllers/adherent.controller';
+import { createAdherent, getAllAdherents, getAdherentById, updateAdherent, deleteAdherent, loginAdherent } from '../controllers/adherent.controller';
 
 const router = express.Router();
 
@@ -13,5 +13,7 @@ router.get('/:id', getAdherentById);
 router.put('/:id', updateAdherent);
 // Route pour supprimer un produit
 router.delete('/:id', deleteAdherent);
+// Route pour le login d'un adhérent
+router.post('/login', loginAdherent);
 
 export default router;

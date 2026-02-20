@@ -76,11 +76,31 @@ export const deleteAdherent = async (id: string): Promise<void> => {
 };
 
 export const connexion = async (email: string, mdp: string): Promise<void> => {
+    try {
+        const response = await fetch(`${API_BASE}/adherents/login`, {
+            method: 'POST',
+            headers: _HEADER,
+            body: JSON.stringify({ email, mdp: mdp }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Échec de la connexion');
+        }
+
+        const { token } = await response.json();
+        localStorage.setItem('token', token);
+    } catch (error) {
+        console.error('Erreur lors de la connexion :', error);
+        throw error;
+    }
+};
+
+/*export const connexion = async (email: string, mdp: string): Promise<void> => {
     const adherents = await getAdherents();
     const adherent = adherents.find((a) => a.email === email && a.mdp === mdp);
     if (!adherent) throw new Error('Email ou mot de passe incorrect');
     localStorage.setItem('adherent', JSON.stringify(adherent));
-};
+};*/
 
 export const deconnexion = (): void => {
     localStorage.removeItem('adherent');
