@@ -83,9 +83,8 @@ const Panier = () => {
             return;
         }
 
-        // Récupérer l'adhérent connecté depuis localStorage (clé 'adherent')
         const adherentConnecte = getAdherentConnecte();
-        if (!adherentConnecte?._id) {
+        if (!adherentConnecte?.id) {
             setSucces(false);
             setMessage("Impossible d'identifier l'adhérent connecté.");
             return;
@@ -96,9 +95,8 @@ const Panier = () => {
 
         try {
             for (const item of panier) {
-                // On envoie uniquement les IDs comme attendu par Mongoose
                 await createCommande({
-                    adherent: adherentConnecte._id,
+                    adherent: adherentConnecte.id,
                     produit: item.produit._id,
                     quantite: item.quantite,
                     date: new Date(),

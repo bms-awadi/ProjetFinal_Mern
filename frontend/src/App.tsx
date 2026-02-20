@@ -13,6 +13,7 @@ type Page = 'connexion' | 'catalogue' | 'panier' | 'GestionAdherents' | 'Gestion
 function App() {
   const [page, setPage] = useState<Page>(estConnecte() ? 'catalogue' : 'connexion');
   const adherent = getAdherentConnecte();
+  console.log('Adhérent connecté :', adherent);
   const isAdmin = adherent?.role === 'Admin';
 
   const handleDeconnexion = () => {
