@@ -3,7 +3,6 @@ import { Produit } from '../model/produit';
 
 export const getProduits = async (): Promise<Produit[]> => {
     try {
-        console.log('API_BASE:', API_BASE); // Debug: Vérifiez la valeur de API_BASE
         const response = await fetch(`${API_BASE}/produits`);
         if (!response.ok) {
             throw new Error('Échec du chargement des produits');
