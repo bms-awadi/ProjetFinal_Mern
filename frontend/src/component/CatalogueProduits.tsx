@@ -55,10 +55,9 @@ export const Catalogue = () => {
                 <h1 style={{ fontSize: "2rem", fontWeight: 800, color: "#1e293b", marginBottom: "24px" }}>
                     Catalogue Produits
                 </h1>
-
                 {/* Filtres */}
                 <div style={{ display: "flex", gap: "10px", marginBottom: "28px" }}>
-                    {["Tous", "Football", "Natation"].map((cat) => (
+                    {["Tous", "Football", "Natation", "Tennis", "Fitness", "Cyclisme", "Running"].map((cat) => (
                         <button
                             key={cat}
                             onClick={() => setCategorie(cat)}

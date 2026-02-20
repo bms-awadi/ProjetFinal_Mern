@@ -84,6 +84,10 @@ const FormProduit = ({ initialData, onSubmit, onSuccess, submitLabel = "Enregist
                     <option value="Football">Football</option>
                     <option value="Natation">Natation</option>
                     <option value="Basketball">Basketball</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Cyclisme">Cyclisme</option>
+                    <option value="Running">Running</option>
                 </select>
             </div>
 

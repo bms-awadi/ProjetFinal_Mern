@@ -32,16 +32,18 @@ const FormAdherent = ({ initialData, onSubmit, onSuccess, submitLabel = "Enregis
     const [nom, setNom] = useState(initialData?.nom ?? "");
     const [prenom, setPrenom] = useState(initialData?.prenom ?? "");
     const [role, setRole] = useState(initialData?.role ?? "Membre");
-    const [mdp, setMdp] = useState(initialData?.mdp ?? "");
+    const [mdp, setMdp] = useState("");
     const [email, setEmail] = useState(initialData?.email ?? "");
     const [message, setMessage] = useState("");
     const [succes, setSucces] = useState(false);
     const [loading, setLoading] = useState(false);
 
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const adherent: Adherent = { nom, prenom, role, mdp, email };
-        if (!nom || !prenom || !role || !mdp || !email) {
+        if (!nom || !prenom || !role || !email) {
             setSucces(false);
             setMessage("Veuillez remplir tous les champs correctement.");
             return;
@@ -103,7 +105,7 @@ const FormAdherent = ({ initialData, onSubmit, onSuccess, submitLabel = "Enregis
                     style={{ ...inputStyle, cursor: "pointer" }}
                     required
                 >
-                    <option value="Membre">Membre</option>
+                    <option value="Adherent">Adherent</option>
                     <option value="Admin">Admin</option>
                 </select>
             </div>
