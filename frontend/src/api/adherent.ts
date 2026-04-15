@@ -1,12 +1,11 @@
-import { API_BASE, _HEADER } from './config';
-import { Adherent } from '../model/adherent';
+import { API_BASE, _HEADER, authHeader } from './config';
+import { User } from '../model/adherent';
 import { jwtDecode } from 'jwt-decode';
 
 const TOKEN_KEY = 'token';
 
 const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
 
-/** Vérifie que le token existe et n'est pas expiré */
 export const estConnecte = (): boolean => {
     const token = getToken();
     if (!token) return false;
@@ -18,105 +17,95 @@ export const estConnecte = (): boolean => {
     }
 };
 
-/** Retourne le payload décodé du token (sans appel API) */
-export const getAdherentConnecte = (): { id: string; nom: string, prenom: string, email: string, role: string } | null => {
+export const getAdherentConnecte = (): { id: number; nom: string; prenom: string; email: string; role: string } | null => {
     const token = getToken();
     if (!token) return null;
     try {
-        const decoded = jwtDecode<{ id: string; email: string; nom: string, prenom: string; role: string; exp: number }>(token);
-        if (Date.now() >= decoded.exp * 1000) return null; // expiré
+        const decoded = jwtDecode<{ id: number; email: string; nom: string; prenom: string; role: string; exp: number }>(token);
+        if (Date.now() >= decoded.exp * 1000) return null;
         return { id: decoded.id, nom: decoded.nom, prenom: decoded.prenom, email: decoded.email, role: decoded.role };
     } catch {
         return null;
     }
 };
 
-// Auth
-export const connexion = async (email: string, mdp: string): Promise<void> => {
-    try {
-        const response = await fetch(`${API_BASE}/adherents/login`, {
-            method: 'POST',
-            headers: _HEADER,
-            body: JSON.stringify({ email, mdp }),
-        });
-
-        if (!response.ok) throw new Error('Échec de la connexion');
-
-        const { token } = await response.json();
-        if (!token) throw new Error('Token manquant dans la réponse');
-
-        localStorage.setItem(TOKEN_KEY, token);
-    } catch (error) {
-        console.error('Erreur lors de la connexion :', error);
-        throw error;
+export const connexion = async (email: string, password: string): Promise<void> => {
+    const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: _HEADER,
+        body: JSON.stringify({ email, password }),
+    });
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || 'Echec de la connexion');
     }
+    const { token } = await response.json();
+    if (!token) throw new Error('Token manquant dans la reponse');
+    localStorage.setItem(TOKEN_KEY, token);
+};
+
+export const inscription = async (data: { nom: string; prenom: string; email: string; password: string; role?: string }): Promise<void> => {
+    const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: _HEADER,
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || "Echec de l'inscription");
+    }
+    const { token } = await response.json();
+    if (token) localStorage.setItem(TOKEN_KEY, token);
 };
 
 export const deconnexion = (): void => {
     localStorage.removeItem(TOKEN_KEY);
 };
 
-// CRUD adhérents 
-export const getAdherents = async (): Promise<Adherent[]> => {
-    try {
-        const response = await fetch(`${API_BASE}/adherents`);
-        if (!response.ok) throw new Error('Échec du chargement des adhérents');
-        return response.json();
-    } catch (error) {
-        console.error('Erreur lors du chargement des adhérents :', error);
-        throw error;
-    }
+// Admin: CRUD users
+export const getAdherents = async (): Promise<User[]> => {
+    const response = await fetch(`${API_BASE}/users`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Echec du chargement des utilisateurs');
+    return response.json();
 };
 
-export const getAdherentById = async (id: string): Promise<Adherent> => {
-    try {
-        const response = await fetch(`${API_BASE}/adherents/${id}`);
-        if (!response.ok) throw new Error(`Échec du chargement de l'adhérent avec l'ID ${id}`);
-        return response.json();
-    } catch (error) {
-        console.error(`Erreur lors du chargement de l'adhérent avec l'ID ${id} :`, error);
-        throw error;
-    }
+export const getAdherentById = async (id: number): Promise<User> => {
+    const response = await fetch(`${API_BASE}/users/${id}`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Utilisateur non trouve');
+    return response.json();
 };
 
-export const createAdherent = async (adherent: Adherent): Promise<Adherent> => {
-    try {
-        const response = await fetch(`${API_BASE}/adherents`, {
-            method: 'POST',
-            headers: _HEADER,
-            body: JSON.stringify(adherent),
-        });
-        if (!response.ok) throw new Error("Échec de la création de l'adhérent");
-        return response.json();
-    } catch (error) {
-        console.error("Erreur lors de la création de l'adhérent :", error);
-        throw error;
-    }
+export const createAdherent = async (user: any): Promise<User> => {
+    const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: _HEADER,
+        body: JSON.stringify(user),
+    });
+    if (!response.ok) throw new Error("Echec de la creation");
+    const data = await response.json();
+    return data.user || data;
 };
 
-export const updateAdherent = async (id: string, adherent: Adherent): Promise<Adherent> => {
-    try {
-        const response = await fetch(`${API_BASE}/adherents/${id}`, {
-            method: 'PUT',
-            headers: _HEADER,
-            body: JSON.stringify(adherent),
-        });
-        if (!response.ok) throw new Error(`Échec de la mise à jour de l'adhérent avec l'ID ${id}`);
-        return response.json();
-    } catch (error) {
-        console.error(`Erreur lors de la mise à jour de l'adhérent avec l'ID ${id} :`, error);
-        throw error;
-    }
+export const updateAdherent = async (id: number, user: any): Promise<User> => {
+    const response = await fetch(`${API_BASE}/users/${id}`, {
+        method: 'PUT',
+        headers: authHeader(),
+        body: JSON.stringify(user),
+    });
+    if (!response.ok) throw new Error("Echec de la mise a jour");
+    return response.json();
 };
 
-export const deleteAdherent = async (id: string): Promise<void> => {
-    try {
-        const response = await fetch(`${API_BASE}/adherents/${id}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) throw new Error(`Échec de la suppression de l'adhérent avec l'ID ${id}`);
-    } catch (error) {
-        console.error(`Erreur lors de la suppression de l'adhérent avec l'ID ${id} :`, error);
-        throw error;
-    }
+export const deleteAdherent = async (id: number): Promise<void> => {
+    const response = await fetch(`${API_BASE}/users/${id}`, {
+        method: 'DELETE',
+        headers: authHeader(),
+    });
+    if (!response.ok) throw new Error("Echec de la suppression");
+};
+
+export const getUsersByRole = async (role: string): Promise<User[]> => {
+    const response = await fetch(`${API_BASE}/users/role/${role}`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Echec');
+    return response.json();
 };

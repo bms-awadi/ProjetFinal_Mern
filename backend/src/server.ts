@@ -1,9 +1,14 @@
 import express from 'express';
-import commande from './routes/commande.routes'
-import produit from './routes/produit.routes'
-import adherent from './routes/adherent.routes';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import connectDB from './config/db';
+import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes';
+import productRoutes from './routes/product.routes';
+import orderRoutes from './routes/order.routes';
+import deliveryRoutes from './routes/delivery.routes';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,9 +18,12 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/commandes', commande);
-app.use('/api/produits', produit);
-app.use('/api/adherents', adherent);
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/deliveries', deliveryRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

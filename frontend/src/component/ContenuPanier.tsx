@@ -23,10 +23,10 @@ export const PanierProvider = ({ children }: { children: ReactNode }) => {
 
     const ajouterAuPanier = (produit: Produit, quantite: number) => {
         setPanier((prevPanier) => {
-            const existe = prevPanier.find((item) => item.produit._id === produit._id);
+            const existe = prevPanier.find((item) => item.produit.id === produit.id);
             if (existe) {
                 return prevPanier.map((item) =>
-                    item.produit._id === produit._id
+                    item.produit.id === produit.id
                         ? { ...item, quantite: item.quantite + quantite }
                         : item
                 );
@@ -37,7 +37,7 @@ export const PanierProvider = ({ children }: { children: ReactNode }) => {
 
     const supprimerDuPanier = (produitId: string) => {
         setPanier((prevPanier) =>
-            prevPanier.filter((item) => item.produit._id !== produitId)
+            prevPanier.filter((item) => String(item.produit.id) !== produitId)
         );
     };
 
@@ -48,7 +48,7 @@ export const PanierProvider = ({ children }: { children: ReactNode }) => {
         }
         setPanier((prevPanier) =>
             prevPanier.map((item) =>
-                item.produit._id === produitId ? { ...item, quantite } : item
+                String(item.produit.id) === produitId ? { ...item, quantite } : item
             )
         );
     };

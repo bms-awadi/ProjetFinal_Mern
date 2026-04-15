@@ -27,7 +27,7 @@ export const Catalogue = () => {
     const produitsFiltres =
         categorie === "Tous"
             ? produits
-            : produits.filter((p) => p.categorie === categorie);
+            : produits.filter((p) => p.categorie_nom === categorie);
 
     const totalPanier = total;
 
@@ -89,12 +89,12 @@ export const Catalogue = () => {
                         gap: "20px",
                     }}>
                         {produitsFiltres.map((produit) => {
-                            const itemPanier = panier.find((p) => p.produit._id === produit._id);
+                            const itemPanier = panier.find((p) => p.produit.id === produit.id);
                             const quantitePanier = itemPanier ? itemPanier.quantite : 0;
 
                             return (
                                 <div
-                                    key={produit._id}
+                                    key={produit.id}
                                     style={{
                                         background: "white",
                                         borderRadius: "14px",
@@ -118,7 +118,7 @@ export const Catalogue = () => {
                                             {produit.nom}
                                         </h2>
                                         <p style={{ fontSize: "0.8rem", color: "#64748b", marginBottom: "4px" }}>
-                                            Categorie : <strong>{produit.categorie}</strong>
+                                            Categorie : <strong>{produit.categorie_nom}</strong>
                                         </p>
                                         <p style={{ fontSize: "0.8rem", color: produit.stock > 0 ? "#16a34a" : "#ef4444" }}>
                                             Stock : {produit.stock}
@@ -167,7 +167,7 @@ export const Catalogue = () => {
                                             ) : (
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                                     <button
-                                                        onClick={() => modifierQuantite(produit._id!, quantitePanier - 1)}
+                                                        onClick={() => modifierQuantite(String(produit.id!), quantitePanier - 1)}
                                                         style={{
                                                             width: "28px", height: "28px", borderRadius: "50%",
                                                             border: "none", background: "#ef4444", color: "white",
@@ -180,7 +180,7 @@ export const Catalogue = () => {
                                                         {quantitePanier}
                                                     </span>
                                                     <button
-                                                        onClick={() => modifierQuantite(produit._id!, quantitePanier + 1)}
+                                                        onClick={() => modifierQuantite(String(produit.id!), quantitePanier + 1)}
                                                         style={{
                                                             width: "28px", height: "28px", borderRadius: "50%",
                                                             border: "none", background: "#2563eb", color: "white",

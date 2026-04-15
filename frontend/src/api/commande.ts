@@ -1,47 +1,68 @@
-import { API_BASE, _HEADER } from './config';
-import { Commande } from '../model/commande';
+import { API_BASE, authHeader } from './config';
+import { Order, CartItemPayload } from '../model/commande';
 
-export const getCommandes = async (): Promise<Commande[]> => {
-    try {
-        const response = await fetch(`${API_BASE}/commandes`);
-        if (!response.ok) {
-            throw new Error(`Échec du chargement des commandes ! Statut : ${response.status}`);
-        }
-        return response.json();
-    } catch (error) {
-        console.error('Erreur lors du chargement des commandes :', error);
-        throw error;
-    }
-}
+export const getMyOrders = async (): Promise<Order[]> => {
+    const response = await fetch(`${API_BASE}/orders/me`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Echec du chargement des commandes');
+    return response.json();
+};
 
-export const createCommande = async (commande: Commande): Promise<Commande> => {
-    try {
-        console.log('Création de la commande :', commande);
-        const response = await fetch(`${API_BASE}/commandes`, {
-            method: 'POST',
-            headers: _HEADER,
-            body: JSON.stringify(commande),
-        });
-        if (!response.ok) {
-            throw new Error(`Échec de la création de la commande ! Statut : ${response.status}`);
-        }
-        return response.json();
-    } catch (error) {
-        console.error('Erreur lors de la création de la commande :', error);
-        throw error;
-    }
-}
+export const getAllOrders = async (): Promise<Order[]> => {
+    const response = await fetch(`${API_BASE}/orders`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Echec du chargement des commandes');
+    return response.json();
+};
 
-export const deleteCommande = async (id: string): Promise<void> => {
-    try {
-        const response = await fetch(`${API_BASE}/commandes/${id}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) {
-            throw new Error(`Échec de la suppression de la commande avec l’ID ${id} ! Statut : ${response.status}`);
-        }
-    } catch (error) {
-        console.error(`Erreur lors de la suppression de la commande avec l’ID ${id} :`, error);
-        throw error;
+export const getOrderById = async (id: number): Promise<Order> => {
+    const response = await fetch(`${API_BASE}/orders/${id}`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Commande non trouvee');
+    return response.json();
+};
+
+export const createOrder = async (items: CartItemPayload[], adresse_livraison: string): Promise<Order> => {
+    const response = await fetch(`${API_BASE}/orders`, {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify({ items, adresse_livraison }),
+    });
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || 'Echec de la creation de la commande');
     }
-}
+    return response.json();
+};
+
+export const payOrder = async (orderId: number, methode: string = 'carte'): Promise<any> => {
+    const response = await fetch(`${API_BASE}/orders/${orderId}/pay`, {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify({ methode }),
+    });
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || 'Echec du paiement');
+    }
+    return response.json();
+};
+
+export const getVendeurOrders = async (): Promise<any[]> => {
+    const response = await fetch(`${API_BASE}/orders/vendeur/me`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Echec');
+    return response.json();
+};
+
+export const getOrderStats = async (): Promise<any> => {
+    const response = await fetch(`${API_BASE}/orders/stats`, { headers: authHeader() });
+    if (!response.ok) throw new Error('Echec');
+    return response.json();
+};
+
+export const getCommandes = getMyOrders;
+
+export const deleteCommande = async (id: number): Promise<void> => {
+    const response = await fetch(`${API_BASE}/orders/${id}`, {
+        method: 'DELETE',
+        headers: authHeader(),
+    });
+    if (!response.ok) throw new Error('Echec de la suppression');
+};
