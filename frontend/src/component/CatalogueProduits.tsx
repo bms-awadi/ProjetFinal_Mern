@@ -123,6 +123,11 @@ export const Catalogue = () => {
                                         <p style={{ fontSize: "0.8rem", color: produit.stock > 0 ? "#16a34a" : "#ef4444" }}>
                                             Stock : {produit.stock}
                                         </p>
+                                        {produit.vendeur_nom && (
+                                            <p style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px" }}>
+                                                Vendeur : {produit.vendeur_prenom} {produit.vendeur_nom}
+                                            </p>
+                                        )}
                                     </div>
 
                                     {/* Partie droite — prix + panier */}

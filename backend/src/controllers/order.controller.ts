@@ -15,7 +15,7 @@ export const getAllOrders = async (req: AuthRequest, res: Response) => {
 
 export const getOrderById = async (req: AuthRequest, res: Response) => {
     try {
-        const order = await orderService.getById(parseInt(req.params.id));
+        const order = await orderService.getById(parseInt(req.params.id as string));
         if (!order) {
             res.status(404).json({ message: 'Commande non trouvee' });
             return;
@@ -61,7 +61,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
 export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
     try {
         const { statut } = req.body;
-        const order = await orderService.updateStatus(parseInt(req.params.id), statut);
+        const order = await orderService.updateStatus(parseInt(req.params.id as string), statut);
         res.json(order);
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -71,7 +71,7 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
 export const payOrder = async (req: AuthRequest, res: Response) => {
     try {
         const { methode } = req.body;
-        const payment = await orderService.simulatePayment(parseInt(req.params.id), methode);
+        const payment = await orderService.simulatePayment(parseInt(req.params.id as string), methode);
         res.json({ message: 'Paiement accepte', payment });
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -80,7 +80,7 @@ export const payOrder = async (req: AuthRequest, res: Response) => {
 
 export const deleteOrder = async (req: AuthRequest, res: Response) => {
     try {
-        await orderService.deleteOrder(parseInt(req.params.id));
+        await orderService.deleteOrder(parseInt(req.params.id as string));
         res.json({ message: 'Commande supprimee' });
     } catch (error: any) {
         res.status(400).json({ message: error.message });

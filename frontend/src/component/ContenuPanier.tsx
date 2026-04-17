@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Produit } from "../model/produit";
 
 
@@ -18,8 +18,32 @@ interface PanierContextType {
 
 const PanierContext = createContext<PanierContextType | undefined>(undefined);
 
+const getPanierKey = (): string => {
+    try {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return `panier_${payload.id}`;
+        }
+    } catch { }
+    return 'panier_guest';
+};
+
+const loadPanier = (): ArticlePanier[] => {
+    try {
+        const saved = localStorage.getItem(getPanierKey());
+        return saved ? JSON.parse(saved) : [];
+    } catch {
+        return [];
+    }
+};
+
 export const PanierProvider = ({ children }: { children: ReactNode }) => {
-    const [panier, setPanier] = useState<ArticlePanier[]>([]);
+    const [panier, setPanier] = useState<ArticlePanier[]>(loadPanier);
+
+    useEffect(() => {
+        localStorage.setItem(getPanierKey(), JSON.stringify(panier));
+    }, [panier]);
 
     const ajouterAuPanier = (produit: Produit, quantite: number) => {
         setPanier((prevPanier) => {
@@ -56,6 +80,7 @@ export const PanierProvider = ({ children }: { children: ReactNode }) => {
     // viderPanier est une simple fonction void, rien d'autre
     const viderPanier = () => {
         setPanier([]);
+        localStorage.removeItem(getPanierKey());
     };
 
     // total est calculé ici, dans le corps du Provider, pas dans une fonction

@@ -121,6 +121,17 @@ export class ProductRepository {
         return (result.rowCount ?? 0) > 0;
     }
 
+    async hasActiveOrders(productId: number): Promise<boolean> {
+        const result = await pool.query(
+            `SELECT 1 FROM order_items oi
+             JOIN sub_orders so ON oi.sub_order_id = so.id
+             WHERE oi.product_id = $1 AND so.statut NOT IN ('livree')
+             LIMIT 1`,
+            [productId]
+        );
+        return result.rows.length > 0;
+    }
+
     // Categories
     async findAllCategories(): Promise<Category[]> {
         const result = await pool.query('SELECT * FROM categories ORDER BY nom');

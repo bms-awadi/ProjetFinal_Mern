@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Produit } from "../../model/produit";
+import { getCategories } from "../../api/produit";
 
 interface FormProduitProps {
     initialData?: Produit;
-    onSubmit: (produit: Produit) => Promise<Produit>;
+    onSubmit: (produit: any) => Promise<any>;
     onSuccess?: () => void;
     submitLabel?: string;
 }
@@ -30,26 +31,37 @@ const labelStyle: React.CSSProperties = {
 
 const FormProduit = ({ initialData, onSubmit, onSuccess, submitLabel = "Enregistrer" }: FormProduitProps) => {
     const [nom, setNom] = useState(initialData?.nom ?? "");
-    const [categorie, setCategorie] = useState(initialData?.categorie ?? "Football");
+    const [description, setDescription] = useState(initialData?.description ?? "");
+    const [categorie_id, setCategorieId] = useState<string>(initialData?.categorie_id ? String(initialData.categorie_id) : "");
+    const [categories, setCategories] = useState<{ id: number; nom: string }[]>([]);
     const [prix, setPrix] = useState<number>(initialData?.prix ?? 0);
     const [stock, setStock] = useState<number>(initialData?.stock ?? 0);
     const [message, setMessage] = useState("");
     const [succes, setSucces] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        getCategories().then(setCategories).catch(() => { });
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const produit: Produit = { nom, categorie, prix, stock };
-        if (!nom || !categorie || prix < 0 || stock < 0) {
+        if (!nom || prix < 0 || stock < 0) {
             setSucces(false);
             setMessage("Veuillez remplir tous les champs correctement.");
             return;
         }
         setLoading(true);
         try {
-            await onSubmit(produit);
+            await onSubmit({
+                nom,
+                description,
+                prix,
+                stock,
+                categorie_id: categorie_id ? parseInt(categorie_id) : undefined,
+            });
             setSucces(true);
-            setMessage("Enregistré avec succès !");
+            setMessage("Enregistre avec succes !");
             onSuccess?.();
         } catch {
             setSucces(false);
@@ -79,17 +91,16 @@ const FormProduit = ({ initialData, onSubmit, onSuccess, submitLabel = "Enregist
             </div>
 
             <div>
-                <label style={labelStyle}>Catégorie</label>
-                <select value={categorie} onChange={(e) => setCategorie(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
-                    <option value="Football">Football</option>
-                    <option value="Natation">Natation</option>
-                    <option value="Basketball">Basketball</option>
-                    <option value="Tennis">Tennis</option>
-                    <option value="Fitness">Fitness</option>
-                    <option value="Cyclisme">Cyclisme</option>
-                    <option value="Running">Running</option>
-                    <option value="Autres">Autres</option>
+                <label style={labelStyle}>Categorie</label>
+                <select value={categorie_id} onChange={(e) => setCategorieId(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+                    <option value="">-- aucune --</option>
+                    {categories.map((c) => <option key={c.id} value={c.id}>{c.nom}</option>)}
                 </select>
+            </div>
+
+            <div>
+                <label style={labelStyle}>Description</label>
+                <input style={inputStyle} type="text" placeholder="Description du produit" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>

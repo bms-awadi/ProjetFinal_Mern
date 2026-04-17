@@ -43,6 +43,10 @@ export class ProductService {
         if (!isAdmin && product.vendeur_id !== vendeurId) {
             throw new Error('Vous ne pouvez supprimer que vos propres produits');
         }
+        const hasActive = await productRepository.hasActiveOrders(id);
+        if (hasActive) {
+            throw new Error('Ce produit ne peut pas etre supprime car il fait partie de commandes en cours');
+        }
         return productRepository.delete(id);
     }
 

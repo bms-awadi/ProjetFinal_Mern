@@ -16,7 +16,7 @@ const router = express.Router();
 
 // Client routes
 router.get('/me', authenticateToken, getMyOrders);
-router.post('/', authenticateToken, authorizeRoles('client'), createOrder);
+router.post('/', authenticateToken, authorizeRoles('client', 'admin'), createOrder);
 router.post('/:id/pay', authenticateToken, payOrder);
 
 // Vendeur routes

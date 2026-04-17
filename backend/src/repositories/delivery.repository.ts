@@ -109,6 +109,18 @@ export class DeliveryRepository {
         return result.rows[0] || null;
     }
 
+    async findBySubOrderId(subOrderId: number): Promise<Delivery | null> {
+        const result = await pool.query(
+            `SELECT d.*, 
+                    ul.nom as livreur_nom, ul.prenom as livreur_prenom
+             FROM deliveries d
+             LEFT JOIN users ul ON d.livreur_id = ul.id
+             WHERE d.sub_order_id = $1`,
+            [subOrderId]
+        );
+        return result.rows[0] || null;
+    }
+
     async countActiveLivraisons(livreurId: number): Promise<number> {
         const result = await pool.query(
             `SELECT COUNT(*) FROM deliveries

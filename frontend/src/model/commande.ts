@@ -8,6 +8,14 @@ export interface OrderItem {
     product_nom?: string;
 }
 
+export interface DeliveryInfo {
+    id?: number;
+    statut?: string;
+    livreur_nom?: string;
+    livreur_prenom?: string;
+    adresse_livraison?: string;
+}
+
 export interface SubOrder {
     id?: number;
     order_id?: number;
@@ -17,6 +25,7 @@ export interface SubOrder {
     statut?: string;
     sous_total: number;
     items?: OrderItem[];
+    delivery?: DeliveryInfo;
 }
 
 export interface Order {

@@ -15,7 +15,7 @@ export const getAllUsers = async (req: AuthRequest, res: Response) => {
 
 export const getUserById = async (req: AuthRequest, res: Response) => {
     try {
-        const user = await userService.getById(parseInt(req.params.id));
+        const user = await userService.getById(parseInt(req.params.id as string));
         res.json(user);
     } catch (error: any) {
         res.status(404).json({ message: error.message });
@@ -24,7 +24,7 @@ export const getUserById = async (req: AuthRequest, res: Response) => {
 
 export const getUsersByRole = async (req: AuthRequest, res: Response) => {
     try {
-        const users = await userService.getByRole(req.params.role);
+        const users = await userService.getByRole(req.params.role as string);
         res.json(users);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -42,7 +42,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 
 export const updateUser = async (req: AuthRequest, res: Response) => {
     try {
-        const user = await userService.update(parseInt(req.params.id), req.body);
+        const user = await userService.update(parseInt(req.params.id as string), req.body);
         res.json(user);
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -61,7 +61,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 
 export const deleteUser = async (req: AuthRequest, res: Response) => {
     try {
-        await userService.delete(parseInt(req.params.id));
+        await userService.delete(parseInt(req.params.id as string));
         res.json({ message: 'Utilisateur supprime avec succes' });
     } catch (error: any) {
         res.status(400).json({ message: error.message });

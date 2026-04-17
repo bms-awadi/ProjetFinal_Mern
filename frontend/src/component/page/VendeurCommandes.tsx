@@ -16,6 +16,20 @@ const statusColors: Record<string, string> = {
     annulee: "#ef4444",
 };
 
+const deliveryStatusColors: Record<string, string> = {
+    en_attente: "#f59e0b",
+    prise_en_charge: "#2563eb",
+    en_cours: "#8b5cf6",
+    livree: "#16a34a",
+};
+
+const deliveryStatusLabels: Record<string, string> = {
+    en_attente: "En attente de livreur",
+    prise_en_charge: "Prise en charge",
+    en_cours: "En cours de livraison",
+    livree: "Livree",
+};
+
 const VendeurCommandes = () => {
     const [subOrders, setSubOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -68,10 +82,29 @@ const VendeurCommandes = () => {
                         <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #f1f5f9" }}>
                             {so.items.map((item: any, i: number) => (
                                 <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", padding: "4px 0" }}>
-                                    <span style={{ color: "#1e293b" }}>{item.produit_nom || "Produit"} x{item.quantite}</span>
+                                    <span style={{ color: "#1e293b" }}>{item.produit_nom || item.product_nom || "Produit"} x{item.quantite}</span>
                                     <span style={{ color: "#64748b" }}>{parseFloat(item.prix_unitaire).toFixed(2)} EUR/u</span>
                                 </div>
                             ))}
+                        </div>
+                    )}
+                    {so.delivery && (
+                        <div style={{
+                            marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #f1f5f9",
+                            display: "flex", alignItems: "center", gap: "10px",
+                        }}>
+                            <span style={{
+                                padding: "3px 12px", borderRadius: "9999px", fontSize: "0.78rem", fontWeight: 700,
+                                background: `${deliveryStatusColors[so.delivery.statut || "en_attente"]}20`,
+                                color: deliveryStatusColors[so.delivery.statut || "en_attente"],
+                            }}>
+                                Livraison: {deliveryStatusLabels[so.delivery.statut || "en_attente"]}
+                            </span>
+                            {so.delivery.livreur_nom && (
+                                <span style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                                    Livreur: {so.delivery.livreur_prenom} {so.delivery.livreur_nom}
+                                </span>
+                            )}
                         </div>
                     )}
                 </div>

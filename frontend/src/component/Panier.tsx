@@ -20,6 +20,20 @@ const statusLabels: Record<string, string> = {
     annulee: "Annulee",
 };
 
+const deliveryStatusColors: Record<string, string> = {
+    en_attente: "#f59e0b",
+    prise_en_charge: "#2563eb",
+    en_cours: "#8b5cf6",
+    livree: "#16a34a",
+};
+
+const deliveryStatusLabels: Record<string, string> = {
+    en_attente: "En attente de livreur",
+    prise_en_charge: "Prise en charge",
+    en_cours: "En cours de livraison",
+    livree: "Livree",
+};
+
 const Panier = () => {
     const { panier, supprimerDuPanier, modifierQuantite, viderPanier, total } = usePanier();
     const [loading, setLoading] = useState(false);
@@ -288,6 +302,25 @@ const Panier = () => {
                                                     {statusLabels[so.statut || "en_attente"]}
                                                 </span>
                                             </p>
+                                            {so.delivery && (
+                                                <div style={{
+                                                    display: "flex", alignItems: "center", gap: "8px",
+                                                    marginBottom: "8px", marginLeft: "12px",
+                                                }}>
+                                                    <span style={{
+                                                        padding: "2px 10px", borderRadius: "9999px", fontSize: "0.72rem", fontWeight: 700,
+                                                        background: `${deliveryStatusColors[so.delivery.statut || "en_attente"]}20`,
+                                                        color: deliveryStatusColors[so.delivery.statut || "en_attente"],
+                                                    }}>
+                                                        Livraison: {deliveryStatusLabels[so.delivery.statut || "en_attente"]}
+                                                    </span>
+                                                    {so.delivery.livreur_nom && (
+                                                        <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
+                                                            - Livreur: {so.delivery.livreur_prenom} {so.delivery.livreur_nom}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
                                             {so.items?.map((item) => (
                                                 <div key={item.id} style={{
                                                     display: "flex", justifyContent: "space-between",

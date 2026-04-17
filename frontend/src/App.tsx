@@ -55,7 +55,7 @@ function App() {
 
   const pagesNavigation: NavItem[] = [
     { key: 'catalogue', label: 'Catalogue', roles: ['client', 'admin'] },
-    { key: 'panier', label: 'Mon Panier', roles: ['client'] },
+    { key: 'panier', label: 'Mon Panier', roles: ['client', 'admin'] },
     { key: 'gestion-produits', label: 'Mes Produits', roles: ['vendeur'] },
     { key: 'vendeur-commandes', label: 'Mes Commandes', roles: ['vendeur'] },
     { key: 'livreur-dashboard', label: 'Livraisons', roles: ['livreur'] },
@@ -81,35 +81,42 @@ function App() {
     <PanierProvider>
       {pageEffective !== 'connexion' && pageEffective !== 'inscription' && (
         <nav style={{
-          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+          backgroundImage: "url('/src/assets/fond1.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative",
           padding: "0 32px",
           display: "flex",
           alignItems: "center",
-          minHeight: "64px",
+          minHeight: "90px",
           boxShadow: "0 2px 12px rgba(0,0,0,0.3)",
         }}>
-          {/* Title */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginRight: "auto" }}>
-            <span style={{ color: "white", fontWeight: 800, fontSize: "1.2rem", letterSpacing: "0.03em" }}>
-              MultiVendor Delivery
+          {/* Overlay */}
+          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.52)", zIndex: 0 }} />
+
+          {/* Logo + Titre */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", zIndex: 1, marginRight: "auto" }}>
+            <img src="/src/assets/logo.png" style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.5)" }} />
+            <span style={{ color: "white", fontWeight: 800, fontSize: "1.35rem", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
+              Ligue Sportive Auvergne
             </span>
           </div>
 
           {/* Navigation buttons */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", zIndex: 1 }}>
             {pagesVisibles.map(({ key, label }, i) => (
               <button
                 key={key + '-' + i}
                 onClick={() => setPage(key)}
                 style={{
-                  padding: "7px 16px",
+                  padding: "8px 18px",
                   borderRadius: "9999px",
                   border: "none",
-                  fontSize: "0.83rem",
+                  fontSize: "0.85rem",
                   fontWeight: 600,
                   cursor: "pointer",
-                  background: pageEffective === key ? "white" : "rgba(255,255,255,0.08)",
-                  color: pageEffective === key ? "#1e293b" : "rgba(255,255,255,0.8)",
+                  background: pageEffective === key ? "white" : "rgba(255,255,255,0.12)",
+                  color: pageEffective === key ? "#1d4ed8" : "white",
                   transition: "background 0.2s",
                 }}
               >
@@ -119,16 +126,17 @@ function App() {
           </div>
 
           {/* User info + logout */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginLeft: "24px" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px", zIndex: 1, marginLeft: "24px" }}>
             {user && (
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.82rem" }}>
-                  {user.prenom} {user.nom}
+                  Bonjour, <strong>{user.prenom} {user.nom}</strong>
                 </span>
                 <span style={{
                   fontSize: "0.7rem", fontWeight: 700, padding: "2px 8px",
                   borderRadius: "9999px",
-                  background: rc.bg, color: rc.text, border: "1px solid " + rc.border,
+                  background: rc.bg, color: rc.text,
+                  border: "1px solid " + rc.border,
                   textTransform: "capitalize",
                 }}>
                   {role}
@@ -139,11 +147,11 @@ function App() {
               onClick={handleDeconnexion}
               style={{
                 padding: "6px 14px", borderRadius: "9999px", border: "none",
-                fontSize: "0.78rem", fontWeight: 600, cursor: "pointer",
-                background: "rgba(239,68,68,0.15)", color: "#fca5a5",
+                fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                background: "#ef4444", color: "white",
               }}
             >
-              Deconnexion
+              Se deconnecter
             </button>
           </div>
         </nav>

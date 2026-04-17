@@ -31,7 +31,12 @@ export class OrderService {
     }
 
     async getByVendeur(vendeurId: number) {
-        return orderRepository.findSubOrdersByVendeur(vendeurId);
+        const subOrders = await orderRepository.findSubOrdersByVendeur(vendeurId);
+        return Promise.all(subOrders.map(async (so) => {
+            const items = await orderRepository.findItemsBySubOrder(so.id!);
+            const delivery = await deliveryRepository.findBySubOrderId(so.id!);
+            return { ...so, items, delivery };
+        }));
     }
 
     /**
@@ -165,9 +170,9 @@ export class OrderService {
     }
 
     async getStats() {
-        const totalOrders = await orderRepository.countOrders();
-        const revenue = await orderRepository.totalRevenue();
-        const commission = await orderRepository.totalCommission();
-        return { totalOrders, revenue, commission };
+        const total_orders = await orderRepository.countOrders();
+        const total_revenue = await orderRepository.totalRevenue();
+        const total_commission = await orderRepository.totalCommission();
+        return { total_orders, total_revenue, total_commission };
     }
 }

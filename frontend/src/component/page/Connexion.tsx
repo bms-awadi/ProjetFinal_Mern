@@ -37,9 +37,15 @@ const Connexion = ({ onConnecte }: Props) => {
     return (
         <>
             <div style={{
-                minHeight: "100vh", background: "linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%)",
+                minHeight: "100vh",
+                backgroundImage: "url('/src/assets/fond.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
                 display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
             }}>
+                {/* Overlay */}
+                <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 0 }} />
+
                 <div style={{
                     position: "relative", zIndex: 10,
                     background: "rgba(255,255,255,0.15)",
@@ -49,8 +55,13 @@ const Connexion = ({ onConnecte }: Props) => {
                     width: "100%", maxWidth: "420px",
                     boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
                 }}>
-                    <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "white", marginBottom: "8px" }}>
-                        Plateforme Livraison
+                    {/* Logo */}
+                    <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                        <img src="/src/assets/logo.png" style={{ width: "90px", height: "90px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.5)" }} />
+                    </div>
+
+                    <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "white", marginBottom: "8px", textAlign: "center" }}>
+                        Ligue Sportive Auvergne
                     </h2>
                     <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", marginBottom: "28px" }}>
                         Connectez-vous a votre espace

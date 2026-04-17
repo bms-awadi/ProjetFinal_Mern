@@ -1,5 +1,6 @@
 import { pool } from '../config/db';
 import { PoolClient } from 'pg';
+import { DeliveryRepository } from './delivery.repository';
 
 export interface Order {
     id?: number;
@@ -37,6 +38,7 @@ export interface OrderItem {
 }
 
 export class OrderRepository {
+    private deliveryRepository = new DeliveryRepository();
     async beginTransaction(): Promise<PoolClient> {
         const client = await pool.connect();
         await client.query('BEGIN');
@@ -179,7 +181,8 @@ export class OrderRepository {
         const subOrdersWithItems = await Promise.all(
             subOrders.map(async (so) => {
                 const items = await this.findItemsBySubOrder(so.id!);
-                return { ...so, items };
+                const delivery = await this.deliveryRepository.findBySubOrderId(so.id!);
+                return { ...so, items, delivery };
             })
         );
 
